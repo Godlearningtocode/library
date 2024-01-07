@@ -1,5 +1,7 @@
+//assigning an array to store book data
 const myLibrary = [];
 
+//declaring a class for a constructor for book data
 class Book {
     constructor(title, author, page, read) {
         this.title = title,
@@ -9,107 +11,136 @@ class Book {
     }
 }
 
-let addBtn = document.getElementById('addBtn');
-addBtn.addEventListener('click', () => {
-        addBookToLibrary();
-        newCard();
+//assiging variable names to dom elements for dom manipulation
+const mainCard = document.querySelector('#mainCard');
+const addButton = document.getElementById('addButton');
+const formContainer = document.createElement('div');
+formContainer.id = 'formContainer';
+
+
+//EVENTLISTENERS:-
+//1. Click event for adding a book to the library array
+addButton.addEventListener('click', () => {
+        addBookForm();
     }
 )
 
-function addBookToLibrary() {
-    let title = (prompt('What is the Title?')).toLowerCase();
-    let author = (prompt('Who is the Author?')).toLowerCase();
-    let page = (prompt('How many pages is the book?')).toLowerCase();
-    let read = (prompt('Have you completed reading?')).toLowerCase();
-    let add = new Book(title, author, page, read)
-    myLibrary.push(add);
-}
-
-
-let sample1 = new Book('Western Lane', 'Chetna Maroo', '176', 'no');
-let sample2 = new Book('Trust', 'Hernan Diaz', 'unknown', 'no');
-let sample3 = new Book('Bright young women', 'Jessica Knoll', 'unknown', 'no');
-myLibrary.push(sample1, sample2, sample3);  
-
-let parentCard = document.querySelector('.parentCard');
-let card = () => {
-    for (let i = 0; i < myLibrary.length; i++) {
-        let card = document.createElement('div');
-        card.classList.add('card');
-        card.style.width = '200px';
-        card.style.height = '200px';
-        card.textContent = `${myLibrary[i].title} by ${myLibrary[i].author}, Pages: ${myLibrary[i].page}`;
-        parentCard.appendChild(card);
-        let readStatus = document.createElement('button');
-        readStatus.classList.add('readStatus');
-        readStatus.style.width = '100px';
-        readStatus.style.height = '50px';
-        readStatus.textContent = `${myLibrary[i].read}`
-        card.appendChild(readStatus);
-        readStatus.addEventListener('click', () => {
-            if(myLibrary[i].read == 'no') {
-                readStatus.textContent = "";
-                myLibrary[i].read = 'yes';
-                readStatus.textContent = myLibrary[i].read;
-            } else if(myLibrary[i].read == 'yes') {
-                readStatus.textContent = "";
-                myLibrary[i].read = 'no';
-                readStatus.textContent = myLibrary[i].read;
-            } else {
-                return
-            }
-        })
-    }
-}
-card();
-
-let newCard = () => {
-    let card = document.createElement('div');
-    card.textContent = `${myLibrary[myLibrary.length-1].title} by ${myLibrary[myLibrary.length-1].author}, Pages: ${myLibrary[myLibrary.length-1].page}, Read: ${myLibrary[myLibrary.length-1].read}`;
-    card.classList.add('card');
-    card.style.width = '200px';
-    card.style.height = '200px';
-    parentCard.appendChild(card);
-    let readStatus = document.createElement('button');
-    readStatus.classList.add('readStatus');
-    readStatus.style.width = '100px';
-    readStatus.style.height = '50px';
-    readStatus.textContent = `${myLibrary[myLibrary.length-1].read}`
-    card.appendChild(readStatus);
-    readStatus.addEventListener('click', () => {
-        if(myLibrary[myLibrary.length-1].read == 'no') {
-            readStatus.textContent = "";
-            myLibrary[myLibrary.length-1].read = 'yes';
-            readStatus.textContent = myLibrary[myLibrary.length-1].read;
-        } else if(myLibrary[myLibrary.length-1].read == 'yes') {
-            readStatus.textContent = "";
-            myLibrary[myLibrary.length-1].read = 'no';
-            readStatus.textContent = myLibrary[myLibrary.length-1].read;
-        } else {
-            return
+//2. Click event for console logging myLibrary array when add button on form is clicked
+document.body.addEventListener('click', (event) => {
+    if(event.target.id === 'submitButton') {
+        if(document.querySelector('#bookContainer') === null) {
+            const bookContainer = document.createElement('div');
+            bookContainer.id = 'bookContainer';
+            mainCard.prepend(bookContainer);
         }
-    })
-}
 
-let remove = document.getElementById('remove');
-remove.addEventListener('click', () => {
-    removeBook();
+        let titleValue = document.querySelector('#titleInput').value;
+        let authorInput = document.querySelector('#authorInput').value;
+        let pageInput = document.querySelector('#pageInput').value;
+        let readInput = document.querySelector('#readInput').value;
+    
+        let book = new Book(titleValue, authorInput, pageInput, readInput);
+        myLibrary.push(book);
+
+        bookDisplay(book);
+        removeBookForm();
+
+        event.preventDefault();
+    }
 })
 
-let removeBook = () => {
-    let removeBook = prompt('Name of the book you want to remove?');
-    for (let i =0; i < myLibrary.length; i++) {
-        if (myLibrary[i].title == removeBook) {
-            myLibrary.splice(i, 1);
-            break;
-        }
-    }
-    removeChild();
-    card();
+
+//FUNCTIONS:-
+//1. Function for creating a form and collecting data to add to library array
+function addBookForm() {
+    const libraryForm = document.createElement('form');
+    libraryForm.classList.add('form');
+    const titleLabel = document.createElement('label');
+    titleLabel.classList.add('titleLabel');
+    titleLabel.innerText = 'What is the Title?';
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.id = 'titleInput';
+    const authorLabel = document.createElement('label');
+    authorLabel.classList.add('authorLabel');
+    authorLabel.innerText = 'Who is the Author?';
+    const authorInput = document.createElement('input');
+    authorInput.id = 'authorInput';
+    authorInput.type = 'text';
+    const pageLabel = document.createElement('label');
+    pageLabel.classList.add('pageLabel');
+    pageLabel.innerText = 'How many pages is the book?';
+    const pageInput = document.createElement('input');
+    pageInput.id = 'pageInput';
+    pageInput.type = 'text';
+    const readLabel = document.createElement('label');
+    readLabel.classList.add('readLabel');
+    readLabel.innerText = 'Have you completed reading?';
+    const readInput = document.createElement('SELECT');
+    readInput.id = 'readInput';
+    const yesOption = document.createElement('option');
+    yesOption.value = 'yes';
+    yesOption.innerText = 'Yes!';
+    const noOption = document.createElement('option');
+    noOption.value = 'no';
+    noOption.innerText = 'No.';
+    const submitButton = document.createElement('button');
+    submitButton.id = 'submitButton';
+    submitButton.innerText = 'Submit';
+
+    readInput.appendChild(yesOption);
+    readInput.appendChild(noOption);
+
+    libraryForm.appendChild(titleLabel);
+    libraryForm.appendChild(titleInput);
+    libraryForm.appendChild(authorLabel);
+    libraryForm.appendChild(authorInput);
+    libraryForm.appendChild(pageLabel);
+    libraryForm.appendChild(pageInput);
+    libraryForm.appendChild(readLabel);
+    libraryForm.appendChild(readInput);
+    libraryForm.appendChild(submitButton);
+
+    formContainer.appendChild(libraryForm);
+
+    mainCard.append(formContainer);
 }
 
-let removeChild = () => {
-    while(parentCard.firstChild) {
-        parentCard.removeChild(parentCard.firstChild);
-    }
+//2. Function to display library elements 
+function bookDisplay(book) {
+    const bookCard = document.createElement('div');
+    bookCard.classList.add('bookCard');
+    const bookTitle = document.createElement('div');
+    bookTitle.classList.add('bookTitle');
+    bookTitle.innerText = book.title
+    const bookAuthor = document.createElement('div');
+    bookAuthor.classList.add('bookAuthor');
+    bookAuthor.innerText = `By ${book.author}`;
+    const bookPage = document.createElement('div');
+    bookPage.classList.add('bookPage');
+    bookPage.innerText = `${book.page} pages`
+    const bookRead = document.createElement('button');
+    bookRead.classList.add('bookRead');
+    bookRead.innerText = book.read;
+    const removeBook = document.createElement('button');
+    removeBook.classList.add('removeBook');
+    removeBook.innerText = 'Remove';
+
+    bookCard.appendChild(bookTitle);
+    bookCard.appendChild(bookAuthor);
+    bookCard.appendChild(bookPage);
+    bookCard.appendChild(bookRead);
+    bookCard.appendChild(removeBook);
+
+    bookContainer.appendChild(bookCard);
+}
+
+//3. Function to remove book form
+function removeBookForm() {
+    formContainer.removeChild(formContainer.firstChild);
+}
+
+//4. Function to remove book from library and display
+function removeBook() {
+    const removedBook = document.
 }
